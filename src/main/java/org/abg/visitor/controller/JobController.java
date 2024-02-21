@@ -1,11 +1,14 @@
 package org.abg.visitor.controller;
 
+import org.abg.visitor.utls.JsonResponse;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +23,7 @@ public class JobController {
     private Job job;
 
     @GetMapping("/runJob")
-    public BatchStatus load() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
+    public ResponseEntity<JsonResponse> load() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addDate("timestamp", Calendar.getInstance().getTime())
                 .toJobParameters();
@@ -28,6 +31,10 @@ public class JobController {
         while (jobExecution.isRunning()) {
             System.out.println("Job Executing.....");
         }
-        return jobExecution.getStatus();
+        JsonResponse<String> jsonResponse = new JsonResponse<>();
+        jsonResponse.setStatus(true);
+        jsonResponse.setMessage(jobExecution.getStatus().toString());
+        return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+//        return jobExecution.getStatus();
     }
 }
