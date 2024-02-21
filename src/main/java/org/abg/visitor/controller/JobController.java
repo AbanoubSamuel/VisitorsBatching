@@ -23,7 +23,7 @@ public class JobController {
     private Job job;
 
     @GetMapping("/runJob")
-    public ResponseEntity<JsonResponse> load() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
+    public ResponseEntity<JsonResponse<String>> load() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addDate("timestamp", Calendar.getInstance().getTime())
                 .toJobParameters();
