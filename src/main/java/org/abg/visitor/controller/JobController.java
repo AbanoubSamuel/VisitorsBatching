@@ -33,8 +33,7 @@ public class JobController {
         }
         JsonResponse<String> jsonResponse = new JsonResponse<>();
         jsonResponse.setStatus(true);
-        jsonResponse.setMessage(jobExecution.getStatus().toString());
+        jsonResponse.setMessage("Job: " + jobExecution.getStatus());
         return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
-//        return jobExecution.getStatus();
     }
 }
