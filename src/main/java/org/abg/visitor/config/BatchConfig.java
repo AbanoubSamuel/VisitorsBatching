@@ -48,7 +48,6 @@ public class BatchConfig extends DefaultBatchConfiguration {
         return new Visitor();
     }
 
-
     @Bean
     public Job importVisitorsJob() {
         return new JobBuilder("importVisitorsJob", jobRepository)
@@ -82,23 +81,22 @@ public class BatchConfig extends DefaultBatchConfiguration {
         flatFileItemReader.setName("DEVAL");
         flatFileItemReader.setLinesToSkip(1);
         flatFileItemReader.setResource(inputFile);
-        flatFileItemReader.setLineMapper(linMappe());
+        flatFileItemReader.setLineMapper(lineMapper());
         return flatFileItemReader;
     }
 
     @Bean
-    public LineMapper<Visitor> linMappe() {
+    public LineMapper<Visitor> lineMapper() {
         DefaultLineMapper<Visitor> defaultLineMapper = new DefaultLineMapper<>();
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setDelimiter(",");
         lineTokenizer.setNames("id", "firstName", "lastName", "emailAddress", "phoneNumber", "address", "strVisitDate");
         lineTokenizer.setStrict(false); // Set strict property to false
         defaultLineMapper.setLineTokenizer(lineTokenizer);
-        BeanWrapperFieldSetMapper fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        BeanWrapperFieldSetMapper<Visitor> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
         fieldSetMapper.setTargetType(Visitor.class);
         defaultLineMapper.setFieldSetMapper(fieldSetMapper);
         return defaultLineMapper;
-
     }
 
 }
