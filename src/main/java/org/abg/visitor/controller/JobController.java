@@ -20,14 +20,15 @@ public class JobController {
     private JobLauncher jobLauncher;
 
     @Autowired
-    private Job job;
+    private Job importVisitorsJob;
 
     @GetMapping("/runJob")
-    public ResponseEntity<JsonResponse<String>> load() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addDate("timestamp", Calendar.getInstance().getTime())
+    public ResponseEntity<JsonResponse<String>> load()
+            throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException,
+            JobParametersInvalidException, JobRestartException {
+        JobParameters jobParameters = new JobParametersBuilder().addDate("timestamp", Calendar.getInstance().getTime())
                 .toJobParameters();
-        JobExecution jobExecution = jobLauncher.run(job, jobParameters);
+        JobExecution jobExecution = jobLauncher.run(importVisitorsJob, jobParameters);
         while (jobExecution.isRunning()) {
             System.out.println("Job Executing.....");
         }

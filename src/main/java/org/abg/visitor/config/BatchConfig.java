@@ -1,9 +1,8 @@
 package org.abg.visitor.config;
 
 import lombok.RequiredArgsConstructor;
-import org.abg.visitor.dto.Visitor;
-import org.abg.visitor.entities.VisitorsItemProcessor;
-import org.abg.visitor.entities.VisitorsRepository;
+import org.abg.visitor.entities.Visitor;
+import org.abg.visitor.repositories.VisitorsRepository;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -32,13 +31,13 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class BatchConfig extends DefaultBatchConfiguration {
 
     @Autowired
-    private VisitorsRepository visitorsRepository;
-    @Autowired
     private Visitor Visitor;
     @Autowired
     private JobRepository jobRepository;
     @Autowired
-    private ItemReader<Visitor> visitorsItemReader;
+    private VisitorsRepository visitorsRepository;
+    @Autowired
+    private ItemReader<Visitor> visitorItemReader;
     @Autowired
     private PlatformTransactionManager transactionManager;
 
@@ -59,7 +58,7 @@ public class BatchConfig extends DefaultBatchConfiguration {
     public Step importVisitorsStep(JobRepository jobRepository, Visitor visitor, PlatformTransactionManager transactionManager) {
         return new StepBuilder("importVisitorsStep", jobRepository)
                 .<Visitor, Visitor>chunk(100, transactionManager)
-                .reader(visitorsItemReader)
+                .reader(visitorItemReader)
                 .processor(itemProcessor())
                 .writer(itemWriter())
                 .build();
@@ -67,7 +66,7 @@ public class BatchConfig extends DefaultBatchConfiguration {
 
     @Bean
     public ItemProcessor<Visitor, Visitor> itemProcessor() {
-        return new VisitorsItemProcessor();
+        return new VisitorItemProcessor();
     }
 
     @Bean
