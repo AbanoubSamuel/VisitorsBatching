@@ -2,7 +2,7 @@ package org.abg.visitor.config;
 
 import lombok.RequiredArgsConstructor;
 import org.abg.visitor.entities.Visitor;
-import org.abg.visitor.repositories.VisitorsRepository;
+import org.abg.visitor.repositories.VisitorRepository;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -31,11 +31,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class BatchConfig extends DefaultBatchConfiguration {
 
     @Autowired
-    private Visitor Visitor;
+    private Visitor visitor;
     @Autowired
     private JobRepository jobRepository;
     @Autowired
-    private VisitorsRepository visitorsRepository;
+    private VisitorRepository visitorRepository;
     @Autowired
     private ItemReader<Visitor> visitorItemReader;
     @Autowired
@@ -50,7 +50,7 @@ public class BatchConfig extends DefaultBatchConfiguration {
     @Bean
     public Job importVisitorsJob() {
         return new JobBuilder("importVisitorsJob", jobRepository)
-                .start(importVisitorsStep(jobRepository, Visitor, transactionManager))
+                .start(importVisitorsStep(jobRepository, visitor, transactionManager))
                 .build();
     }
 
@@ -71,7 +71,7 @@ public class BatchConfig extends DefaultBatchConfiguration {
 
     @Bean
     public ItemWriter<Visitor> itemWriter() {
-        return visitorsRepository::saveAll;
+        return visitorRepository::saveAll;
     }
 
     @Bean
